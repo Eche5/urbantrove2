@@ -193,8 +193,7 @@
   "scripts": {
     "test": "mocha",
     "serve": "nodemon server",
-    "start": "node server.js",
-    "build": "esbuild server.js --bundle --outfile=./dist/app.js --target=node18 --platform=node"
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC"

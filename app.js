@@ -1,9 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const dotenv = require("dotenv").config();
-const passport = require("passport"); // Adjust the path as necessary
-const credentials = require("./middlewares/credentials");
-
 const path = require("path");
 const rootRoutes = require("./routes/index");
 const userRoutes = require("./routes/user");
@@ -19,12 +16,8 @@ const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const expressErrorHandler = require("./middlewares/errorhandler");
 const notFoundMiddleware = require("./middlewares/notfound");
-const cookieParser = require("cookie-parser");
-const corsOptions = require("./config/corsOptions");
 
 const app = express();
-app.use(credentials);
-
 const limiter = rateLimit({
   windowMs: 24 * 60 * 60 * 1000,
   limit: 10,
@@ -39,26 +32,21 @@ const store = new MongoDBStore({
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 app.use(bodyParser.json());
-
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(compression());
 app.use(helmet());
 app.use(logger("dev"));
-app.use(cors(corsOptions));
-app.use(cookieParser());
+app.use(cors({ origin: true, credentials: true, optionsSuccessStatus: 200 }));
+
 app.use(
   session({
     resave: false,
     saveUninitialized: false,
     secret: session_secret,
-    store,
-    cookie: {
-      maxAge: 1000 * 60 * 60 * 24,
-    },
+    store: store,
   })
 );
-app.use(passport.initialize());
-app.use(passport.session());
+
 app.use("/api/v1", rootRoutes);
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/user", userRoutes);
