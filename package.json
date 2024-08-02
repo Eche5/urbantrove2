@@ -1,0 +1,60 @@
+{
+  "name": "urban-trove-api",
+  "version": "1.0.0",
+  "description": "Urban Trove Ecommerce application Backend",
+  "main": "server.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha",
+    "serve": "nodemon server",
+    "start": "node server.js",
+    "build": "esbuild server.js --bundle --outfile=./dist/app.js --target=node18 --platform=node"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/urbantrove-ng/Urban-Trove.git"
+  },
+  "keywords": [
+    "Urban",
+    "Trove",
+    "Ecommerce",
+    "Api",
+    "Backend"
+  ],
+  "author": "Urban Trove Developers",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/urbantrove-ng/Urban-Trove/server/issues"
+  },
+  "homepage": "https://github.com/urbantrove-ng/Urban-Trove/server/#readme",
+  "dependencies": {
+    "axios": "^1.6.5",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "compression": "^1.7.4",
+    "connect-mongodb-session": "^3.1.1",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.5",
+    "express-session": "^1.17.3",
+    "express-validator": "^7.0.1",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "lodash": "^4.17.21",
+    "mongoose": "^8.0.0",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "passport": "^0.7.0",
+    "passport-facebook": "^3.0.0",
+    "passport-google-oauth20": "^2.0.0",
+    "passport-jwt": "^4.0.1",
+    "passport-twitter": "^1.0.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

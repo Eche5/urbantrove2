@@ -1,0 +1,182 @@
+[
+  {
+    "category_name": "Fashion & Accessories",
+    "category_type": "products",
+    "sub_category": "Clothing (Men's, Women's, Children's)"
+  },
+  {
+    "category_name": "Fashion & Accessories",
+    "category_type": "products",
+    "sub_category": "Shoes & Footwear"
+  },
+  {
+    "category_name": "Fashion & Accessories",
+    "category_type": "products",
+    "sub_category": "Handbags & Accessories"
+  },
+  {
+    "category_name": "Fashion & Accessories",
+    "category_type": "products",
+    "sub_category": "Jewelry & Watches"
+  },
+  {
+    "category_name": "Electronics & Gadgets",
+    "category_type": "products",
+    "sub_category": "Smartphones & Tablets"
+  },
+  {
+    "category_name": "Electronics & Gadgets",
+    "category_type": "products",
+    "sub_category": "Computers & Laptops"
+  },
+  {
+    "category_name": "Electronics & Gadgets",
+    "category_type": "products",
+    "sub_category": "Cameras & Photography Equipment"
+  },
+  {
+    "category_name": "Electronics & Gadgets",
+    "category_type": "products",
+    "sub_category": "Audio & Video Devices"
+  },
+  {
+    "category_name": "Home & Garden",
+    "category_type": "products",
+    "sub_category": "Furniture & Decor"
+  },
+  {
+    "category_name": "Home & Garden",
+    "category_type": "products",
+    "sub_category": "Kitchenware & Cooking Utensils"
+  },
+  {
+    "category_name": "Home & Garden",
+    "category_type": "products",
+    "sub_category": "Home Appliances"
+  },
+  {
+    "category_name": "Home & Garden",
+    "category_type": "products",
+    "sub_category": "Gardening Supplies"
+  },
+  {
+    "category_name": "Health & Beauty",
+    "category_type": "products",
+    "sub_category": "Skincare Products"
+  },
+  {
+    "category_name": "Health & Beauty",
+    "category_type": "products",
+    "sub_category": "Haircare Products"
+  },
+  {
+    "category_name": "Health & Beauty",
+    "category_type": "products",
+    "sub_category": "Makeup & Cosmetics"
+  },
+  {
+    "category_name": "Health & Beauty",
+    "category_type": "products",
+    "sub_category": "Personal Care Appliances"
+  },
+  {
+    "category_name": "Sports & Outdoors",
+    "category_type": "products",
+    "sub_category": "Athletic Apparel & Footwear"
+  },
+  {
+    "category_name": "Sports & Outdoors",
+    "category_type": "products",
+    "sub_category": "Sports Equipment (e.g., yoga mats, weights, bicycles)"
+  },
+  {
+    "category_name": "Sports & Outdoors",
+    "category_type": "products",
+    "sub_category": "Camping & Hiking Gear"
+  },
+  {
+    "category_name": "Sports & Outdoors",
+    "category_type": "products",
+    "sub_category": "Outdoor Recreation Accessories"
+  },
+  {
+    "category_name": "Books & Stationery",
+    "category_type": "products",
+    "sub_category": "Fiction & Non-fiction Books"
+  },
+  {
+    "category_name": "Books & Stationery",
+    "category_type": "products",
+    "sub_category": "Office Supplies"
+  },
+  {
+    "category_name": "Books & Stationery",
+    "category_type": "products",
+    "sub_category": "Writing Instruments"
+  },
+  {
+    "category_name": "Books & Stationery",
+    "category_type": "products",
+    "sub_category": "Art Supplies"
+  },
+  {
+    "category_name": "Food & Beverages",
+    "category_type": "products",
+    "sub_category": "Gourmet Foods & Snacks"
+  },
+  {
+    "category_name": "Food & Beverages",
+    "category_type": "products",
+    "sub_category": "Beverages (e.g., coffee, tea, wine)"
+  },
+  {
+    "category_name": "Food & Beverages",
+    "category_type": "products",
+    "sub_category": "Specialty Ingredients"
+  },
+  {
+    "category_name": "Food & Beverages",
+    "category_type": "products",
+    "sub_category": "Cooking & Baking Supplies"
+  },
+  {
+    "category_name": "Electrical & Home Appliances",
+    "category_type": "products",
+    "sub_category": "Kitchen Appliances (e.g., blenders, toasters, coffee makers)"
+  },
+  {
+    "category_name": "Electrical & Home Appliances",
+    "category_type": "products",
+    "sub_category": "Laundry Appliances"
+  },
+  {
+    "category_name": "Electrical & Home Appliances",
+    "category_type": "products",
+    "sub_category": "Vacuum Cleaners"
+  },
+  {
+    "category_name": "Electrical & Home Appliances",
+    "category_type": "products",
+    "sub_category": "Air Conditioners & Fans"
+  },
+  {
+    "category_name": "Automotive & Accessories",
+    "category_type": "products",
+    "sub_category": "Car Parts & Accessories"
+  },
+  {
+    "category_name": "Automotive & Accessories",
+    "category_type": "products",
+    "sub_category": "Car Care Products"
+  },
+  {
+    "category_name": "Automotive & Accessories",
+    "category_type": "products",
+    "sub_category": "Automotive Electronics"
+  },
+  {
+    "category_name": "Automotive & Accessories",
+    "category_type": "products",
+    "sub_category": "Vehicle Maintenance Tools"
+  }
+]
