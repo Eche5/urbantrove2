@@ -46,8 +46,6 @@ app.use(helmet());
 app.use(logger("dev"));
 app.use(cors(corsOptions));
 app.use(cookieParser());
-app.set("trust proxy", 1); // trust first proxy
-
 app.use(
   session({
     resave: false,
