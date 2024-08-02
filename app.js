@@ -53,7 +53,9 @@ app.use(
     secret: session_secret,
     store,
     cookie: {
-      maxAge: 60000 * 60,
+      maxAge: 1000 * 60 * 60 * 24,
+      secure: process.env.NODE_ENV === "production", // Ensure cookies are only sent over HTTPS in production
+      sameSite: "Lax", // Lax or Strict to prevent third-party usage
     },
   })
 );
