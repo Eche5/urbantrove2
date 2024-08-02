@@ -326,7 +326,8 @@ exports.fetchCart = (req, res, next) => {
   if (!req.session["cart"] || typeof req.session["cart"] === "undefined") {
     req.session["cart"] = [];
   }
-  console.log(req.session);
+  req.session.visited = true;
+  console.log(req.session.id);
 
   const cart = req.session["cart"];
   res.status(200).json({
@@ -341,7 +342,9 @@ exports.addTocart = tryCatch(async (req, res, next) => {
   if (!req.session["cart"] || typeof req.session["cart"] === "undefined") {
     req.session["cart"] = [];
   }
-  console.log(req.session);
+  req.session.visited = true;
+
+  console.log(req.session.id);
 
   const cart = req.session["cart"];
   const product = await Product.findOne({ productType: "product", _id: id });
