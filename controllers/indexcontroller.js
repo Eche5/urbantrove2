@@ -323,11 +323,12 @@ exports.searchProduct = (req, res, next) => {
     });
 };
 exports.fetchCart = (req, res, next) => {
+  console.log(req.session.id);
+  req.session.visited = true;
+
   if (!req.session["cart"] || typeof req.session["cart"] === "undefined") {
     req.session["cart"] = [];
   }
-  req.session.visited = true;
-  console.log(req.session.id);
 
   const cart = req.session["cart"];
   res.status(200).json({
@@ -338,11 +339,12 @@ exports.fetchCart = (req, res, next) => {
   });
 };
 exports.addTocart = tryCatch(async (req, res, next) => {
+  req.session.visited = true;
+
   const { id } = req.body;
   if (!req.session["cart"] || typeof req.session["cart"] === "undefined") {
     req.session["cart"] = [];
   }
-  req.session.visited = true;
 
   console.log(req.session.id);
 

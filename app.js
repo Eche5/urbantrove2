@@ -53,10 +53,7 @@ app.use(
     secret: session_secret,
     store: store,
     cookie: {
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
-      secure: false, // Set to true if using HTTPS
-      httpOnly: true, // Ensures the cookie is sent only over HTTP(S), not client JavaScript
-      sameSite: "lax",
+      maxAge: 60000 * 60,
     },
   })
 );
