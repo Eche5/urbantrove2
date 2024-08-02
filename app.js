@@ -51,7 +51,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     secret: session_secret,
-    store: store,
+    store,
     cookie: {
       maxAge: 60000 * 60,
     },
