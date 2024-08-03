@@ -189,7 +189,6 @@
     "xtraverse": "^0.1.0",
     "yallist": "^4.0.0"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "mocha",
     "serve": "nodemon server",
