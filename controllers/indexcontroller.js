@@ -333,6 +333,7 @@ exports.fetchCart = (req, res, next) => {
     success: true,
     code: 200,
     status: "success",
+    id: req.session.id,
     data: { cart, msg: "User cart fetched" },
   });
 };
