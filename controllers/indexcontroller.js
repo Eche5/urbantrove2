@@ -333,7 +333,6 @@ exports.fetchCart = (req, res, next) => {
     success: true,
     code: 200,
     status: "success",
-    id: req.session.id,
     data: { cart, msg: "User cart fetched" },
   });
 };
@@ -375,7 +374,6 @@ exports.addTocart = tryCatch(async (req, res, next) => {
   res.status(200).json({
     success: true,
     code: 200,
-    id: req.session.id,
     status: "success",
     data: { cart, msg: "added to cart" },
   });
