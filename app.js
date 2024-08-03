@@ -27,7 +27,10 @@ const limiter = rateLimit({
   legacyHeaders: false,
 });
 const store = new MongoDBStore({
-  uri: database_uri,
+  uri:
+    process.env.NODE_ENV === "development"
+      ? process.env.LOCAL_DB_URI
+      : process.env.REMOTE_DB_URI,
   collection: "sessions",
 });
 
