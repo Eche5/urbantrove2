@@ -4,7 +4,6 @@ module.exports ={
     process.env.LOCAL_DB_URI:
     process.env.REMOTE_DB_URI,
     jwt_secret:process.env.JWT_SECRET,
-    refresh_secret:process.env.REFRESH_JWT_SECRET,
     jwt_expires:process.env.JWT_EXPIRES,
     allowedOrigin:process.env.NODE_ENV ==='development'?
     process.env.LOCAL_DOMAIN:

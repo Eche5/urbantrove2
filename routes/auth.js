@@ -14,6 +14,7 @@ const passport = require("../config/passport");
 router.route("/signup").post([user, password], controller.signup);
 router.route("/signin").post([email, password], controller.signin);
 router.route("/refresh").get(controller.refresh);
+router.route("/logout").post(controller.LogOut);
 
 router
   .route("/forgot_password")

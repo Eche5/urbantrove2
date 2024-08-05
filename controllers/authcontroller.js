@@ -341,3 +341,12 @@ exports.refresh = (req, res) => {
     });
   });
 };
+exports.LogOut = (req, res) => {
+  const cookie = req.cookies;
+
+  if (!cookie) return res.sendStatus(204); //No content
+
+  res.clearCookie("jwt", { httpOnly: true, sameSite: "None", secure: true });
+
+  res.json({ message: "Cookie cleared" });
+};
