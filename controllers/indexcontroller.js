@@ -1,5 +1,7 @@
 const Category = require("../models/category");
 const Product = require("../models/product");
+const mongoose = require("mongoose");
+
 const { server } = require("../config");
 const fs = require("fs");
 const tryCatch = require("../utilities/catchasync");
@@ -169,6 +171,65 @@ exports.createNewProduct = async (req, res, next) => {
     });
 };
 
+exports.getMerchantProducts = (req, res, next) => {
+  try {
+    const merchantProduct = Product.findById(req.user._id);
+    if (!merchantProduct) {
+      res.status(404).json({ status: true, msg: "no product found" });
+      return;
+    }
+    res.status(200).json({
+      number: merchantProduct.length,
+      status: true,
+      products: merchantProduct,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getOrdersByMerchant = async (req, res) => {
+  const merchantId = req.user._id;
+
+  try {
+    const orders = await Order.aggregate([
+      {
+        $lookup: {
+          from: "products",
+          localField: "items.product",
+          foreignField: "_id",
+          as: "productDetails",
+        },
+      },
+      {
+        $unwind: "$productDetails",
+      },
+      {
+        $match: {
+          "productDetails.userId": new mongoose.Types.ObjectId(merchantId),
+        },
+      },
+      {
+        $group: {
+          _id: "$_id",
+          orderNo: { $first: "$orderNo" },
+          items: { $first: "$items" },
+          userId: { $first: "$userId" },
+          total: { $first: "$total" },
+          status: { $first: "$status" },
+          address: { $first: "$address" },
+          createdAt: { $first: "$createdAt" },
+          updatedAt: { $first: "$updatedAt" },
+        },
+      },
+    ]);
+
+    res.status(200).json(orders);
+  } catch (error) {
+    console.error("Error fetching orders by merchant:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 exports.fetchRelatedProducts = (req, res, next) => {
   const { id, productType } = req.body;
   Product.find({ productType: productType, categoryId: id })
@@ -180,7 +241,10 @@ exports.fetchRelatedProducts = (req, res, next) => {
         body: {
           status: 200,
           status: "success",
-          data: { products, msg: "Related Products fetched successfully" },
+          data: {
+            products,
+            msg: "Related Products fetched successfully",
+          },
         },
       });
     })
@@ -358,6 +422,7 @@ exports.addTocart = tryCatch(async (req, res, next) => {
         product: {
           productName: product.productName,
           imageUrl: product.images[0].url,
+          vendorid: product.userId,
           id: product._id,
           price: product.prices.actualPrice - product.prices.discount,
         },
@@ -442,12 +507,14 @@ exports.startPayment = tryCatch(async (req, res, next) => {
       },
     });
   }
-  const response = await paymentInstance.startPayment({
+
+  const paymentdata = {
     email: req.user.email,
     full_name: req.user.fullname || `User-${req.user._id}`,
     amount: order.total,
     orderId: id,
-  });
+  };
+  const response = await paymentInstance.startPayment(paymentdata);
   res.status(201).json({
     success: true,
     status: "Payment Started",

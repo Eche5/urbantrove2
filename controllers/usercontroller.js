@@ -9,19 +9,28 @@ exports.checkOut = (req, res, next) => {
     const cart = req.session["cart"];
     const orderItems = [];
     let totalPrice = 0;
+    let totalCommission = 0;
+
     for (let item of cart) {
       let orderItem = {};
       orderItem["product"] = item.product.id;
-      orderItem["total"] = parseFloat(item.total) + parseFloat(item.shipping);
+      orderItem["total"] =
+        parseFloat(item.total) + parseFloat(item.shipping) - item.total * 0.1;
       orderItem["quantity"] = parseInt(item.quantity);
+      orderItem["vendorid"] = item.product.vendorid;
+      orderItem["commission"] = item.total * 0.1;
       orderItems.push(orderItem);
       totalPrice += parseFloat(item.total) + parseFloat(item.shipping);
+      totalCommission += orderItem["commission"];
     }
+
     Order.create({
       items: orderItems,
       userId: req.user._id,
       total: totalPrice,
+      totalCommission,
       address: req.user.location,
+      vendorid: orderItems.vendorid,
       status: "pending",
       createdAt: new Date(Date.now()),
       updatedAt: new Date(Date.now()),
