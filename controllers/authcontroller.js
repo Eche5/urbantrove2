@@ -78,7 +78,7 @@ exports.signin = async (req, res, next) => {
         status: "error",
         data: {
           path: "email",
-          msg: "Email address not found.",,
+          msg: "Email address not found.",
           value: email,
           location: "body",
           type: "field",
