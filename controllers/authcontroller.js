@@ -72,13 +72,13 @@ exports.signin = async (req, res, next) => {
     const user = await User.findOne({ email: email });
 
     if (!user) {
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
-        code: 401,
+        code: 404,
         status: "error",
         data: {
           path: "email",
-          msg: "Incorrect email address",
+          msg: "Email address not found.",,
           value: email,
           location: "body",
           type: "field",
@@ -88,13 +88,13 @@ exports.signin = async (req, res, next) => {
 
     const doMatch = await bcrypt.compare(password, user.password);
     if (!doMatch) {
-      return res.status(400).json({
+      return res.status(401).json({
         success: false,
         code: 401,
         status: "error",
         data: {
           path: "password",
-          msg: "Incorrect password",
+          msg: "email or password is Incorrect",
           value: password,
           location: "body",
           type: "field",
