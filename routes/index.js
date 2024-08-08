@@ -27,7 +27,7 @@ router
 
 router
   .route("/mercantOrder")
-  .get([auth, merchant], controller.getOrdersByMerchant);
+  .get([auth, merchant], controller.getOrdersByVendor);
 router
   .route("/product/image")
   .delete([auth, merchant], controller.deleteProductImage);

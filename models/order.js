@@ -14,14 +14,15 @@ const orderSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Product",
       },
+      vendorid: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
       commission: Number,
       total: Number,
     },
   ],
-  vendorid: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-  },
+
   userId: {
     type: Schema.Types.ObjectId,
     ref: "User",

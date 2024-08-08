@@ -23,7 +23,6 @@ exports.checkOut = (req, res, next) => {
       totalPrice += parseFloat(item.total) + parseFloat(item.shipping);
       totalCommission += orderItem["commission"];
     }
-
     Order.create({
       items: orderItems,
       userId: req.user._id,

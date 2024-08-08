@@ -171,28 +171,37 @@ exports.createNewProduct = async (req, res, next) => {
     });
 };
 
-exports.getMerchantProducts = (req, res, next) => {
+exports.getMerchantProducts = async (req, res, next) => {
+  const userId = req.user._id;
   try {
-    const merchantProduct = Product.findById(req.user._id);
-    if (!merchantProduct) {
+    const merchantProducts = await Product.find({ userId });
+    if (!merchantProducts) {
       res.status(404).json({ status: true, msg: "no product found" });
       return;
     }
     res.status(200).json({
-      number: merchantProduct.length,
+      number: merchantProducts.length,
       status: true,
-      products: merchantProduct,
+      products: merchantProducts,
     });
   } catch (error) {
     next(error);
   }
 };
 
-exports.getOrdersByMerchant = async (req, res) => {
-  const merchantId = req.user._id;
+exports.getOrdersByVendor = async (req, res) => {
+  const vendorId = req.user._id;
 
   try {
     const orders = await Order.aggregate([
+      {
+        $unwind: "$items",
+      },
+      {
+        $match: {
+          "items.vendorid": new mongoose.Types.ObjectId(vendorId),
+        },
+      },
       {
         $lookup: {
           from: "products",
@@ -205,28 +214,61 @@ exports.getOrdersByMerchant = async (req, res) => {
         $unwind: "$productDetails",
       },
       {
-        $match: {
-          "productDetails.userId": new mongoose.Types.ObjectId(merchantId),
-        },
-      },
-      {
         $group: {
           _id: "$_id",
           orderNo: { $first: "$orderNo" },
-          items: { $first: "$items" },
+          items: {
+            $push: {
+              quantity: "$items.quantity",
+              commission: "$items.commission",
+              total: "$items.total",
+              product: {
+                _id: "$productDetails._id",
+                productName: "$productDetails.productName",
+                images: "$productDetails.images",
+              },
+            },
+          },
           userId: { $first: "$userId" },
           total: { $first: "$total" },
+          totalCommission: { $first: "$totalCommission" },
           status: { $first: "$status" },
           address: { $first: "$address" },
           createdAt: { $first: "$createdAt" },
           updatedAt: { $first: "$updatedAt" },
         },
       },
+      {
+        $lookup: {
+          from: "users",
+          localField: "userId",
+          foreignField: "_id",
+          as: "userDetails",
+        },
+      },
+      {
+        $unwind: "$userDetails",
+      },
+      {
+        $project: {
+          orderNo: 1,
+          items: 1,
+          total: 1,
+          totalCommission: 1,
+          status: 1,
+          address: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          user: {
+            fullname: "$userDetails.fullname",
+          },
+        },
+      },
     ]);
 
     res.status(200).json(orders);
   } catch (error) {
-    console.error("Error fetching orders by merchant:", error);
+    console.error("Error fetching orders by vendor:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
