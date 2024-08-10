@@ -4,6 +4,8 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 const { jwt_secret, jwt_expires } = require("../config");
 const crypto = require("crypto");
+const Mailgen = require("mailgen");
+const nodemailer = require("nodemailer");
 
 exports.signup = (req, res, next) => {
   const errors = validationResult(req);
@@ -34,28 +36,77 @@ exports.signup = (req, res, next) => {
       const refreshToken = jwt.sign({ _id: createdUser._id }, jwt_secret, {
         expiresIn: "30m",
       });
-      res.cookie("jwt", refreshToken, {
-        httpOnly: true,
+
+      let config = {
+        host: "server2.lytehosting.com",
+        port: 465,
         secure: true,
-        sameSite: "none",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      });
-      //Email function call should be here
-      res.status(200).json({
-        success: true,
-        code: 200,
-        status: "success",
-        data: {
-          ...createdUser["_doc"],
-          accessToken: token,
-          msg: "Registration was successful",
+        auth: {
+          user: process.env.EMAIL,
+          pass: process.env.PASSWORD,
         },
+      };
+      let transporter = nodemailer.createTransport(config);
+
+      let MailGenerator = new Mailgen({
+        theme: "default",
+        product: {
+          name: "Urban trove",
+          link: "https://mailgen.js/",
+          copyright: "Copyright © 2024 Urban trove. All rights reserved.",
+        },
+      });
+      let response = {
+        body: {
+          name: email,
+          intro:
+            "We are thrilled to have you join us. Verify your email address to get started and access the resources available on our platform.",
+          action: {
+            instructions: "Click the button below to verify your account:",
+            button: {
+              color: "#22BC66", // Optional action button color
+              text: "Verify your account",
+              link: ` www.urbantrov.com.ng/verify/${createdUser._id}`,
+            },
+          },
+          signature: "Sincerely",
+        },
+      };
+      let mail = MailGenerator.generate(response);
+      let message = {
+        from: process.env.EMAIL,
+        to: email,
+        subject: "Verify email",
+        html: mail,
+      };
+
+      // Send the email
+      return transporter.sendMail(message).then(() => {
+        // Set cookie and send the final response here
+        res.cookie("jwt", refreshToken, {
+          httpOnly: true,
+          secure: true,
+          sameSite: "none",
+          maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
+
+        res.status(200).json({
+          success: true,
+          code: 200,
+          status: "success",
+          data: {
+            ...createdUser["_doc"],
+            accessToken: token,
+            msg: "Registration was successful",
+          },
+        });
       });
     })
     .catch((error) => {
-      next(error);
+      next(error); // Forward the error to the error handler middleware
     });
 };
+
 exports.signin = async (req, res, next) => {
   try {
     const errors = validationResult(req);
@@ -94,15 +145,23 @@ exports.signin = async (req, res, next) => {
         status: "error",
         data: {
           path: "password",
-          msg: "email or password is Incorrect",
+          msg: "Email or password is incorrect.",
           value: password,
           location: "body",
           type: "field",
         },
       });
     }
-    if (user.isActive == false) {
-      return res.status(401).json({ success: false, msg: "Account suspended" });
+
+    if (!user.isActive) {
+      return res.status(401).json({
+        success: false,
+        code: 401,
+        status: "error",
+        data: {
+          msg: "Account suspended",
+        },
+      });
     }
 
     const token = jwt.sign({ _id: user._id }, jwt_secret, {
@@ -120,9 +179,9 @@ exports.signin = async (req, res, next) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    // Email function call should be placed here if needed
+    await sendLoginNotification(email); // Call to a separate email service function
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       code: 200,
       status: "success",
@@ -133,9 +192,41 @@ exports.signin = async (req, res, next) => {
       },
     });
   } catch (error) {
-    next(error); // Forward the error to the error handler middleware
+    next(error);
   }
 };
+
+// Separate function for sending email
+const sendLoginNotification = async (email) => {
+const mailOptions = {
+  from: process.env.EMAIL, // Your sender email address
+  to: email, // User's email address
+  subject: "Login Notification",
+  text: `Hello ${email}, you have successfully logged in to your account. If this wasn't you, please contact support immediately.`,
+  html: `<p>Hello <strong>${email}</strong>,</p>
+             <p>You have successfully logged in to your account. If this wasn't you, please <a href="mailto:support@urbantrov.com.ng>contact support</a> immediately.</p>`,
+};
+
+  const transporter = nodemailer.createTransport({
+    host: "server2.lytehosting.com",
+    port: 465,
+    secure: true, // Use true since the port is 465
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD,
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  });
+
+  try {
+    await transporter.sendMail(mailOptions);
+  } catch (err) {
+    console.error("Error sending email:", err);
+  }
+};
+
 exports.forgotPassword = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
