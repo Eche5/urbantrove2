@@ -605,26 +605,26 @@ const sendLoginNotification = async (user, order) => {
       ],
       table: [
         {
-          title: `Order: ${order.orderNo} `,
-          data: order.items.map((item) => ({
-            item: item.product.productName,
-            price: `₦${Number(
-              item.product.prices.actualPrice
-            ).toLocaleString()}`,
-          })),
+          title: `Order: ${order.orderNo}`,
           data: [
+            ...order.items.map((item) => ({
+              item: item.product.productName,
+              price: `₦${Number(
+                item.product.prices.actualPrice
+              ).toLocaleString()}`,
+            })),
             {
-              total: `₦${Number(order.total).toLocaleString()}`,
+              item: "Total",
+              price: `₦${Number(order.total).toLocaleString()}`,
             },
           ],
           columns: {
             customWidth: {
-              item: "20%",
-              price: "15%",
+              item: "60%",
+              price: "40%",
             },
             customAlignment: {
               price: "right",
-              total: "right",
             },
           },
         },
