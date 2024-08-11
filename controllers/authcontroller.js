@@ -38,7 +38,7 @@ exports.signup = (req, res, next) => {
       });
 
       let config = {
-        host: "server2.lytehosting.com",
+        host: "mail.urbantrov.com.ng",
         port: 465,
         secure: true,
         auth: {
@@ -66,7 +66,7 @@ exports.signup = (req, res, next) => {
             button: {
               color: "#22BC66", // Optional action button color
               text: "Verify your account",
-              link: ` www.urbantrov.com.ng/verify/${createdUser._id}`,
+              link: ` https://e-rent-green.vercel.app/verify/${createdUser._id}`,
             },
           },
           signature: "Sincerely",
@@ -179,8 +179,6 @@ exports.signin = async (req, res, next) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    await sendLoginNotification(email); // Call to a separate email service function
-
     return res.status(200).json({
       success: true,
       code: 200,
@@ -198,14 +196,12 @@ exports.signin = async (req, res, next) => {
 
 // Separate function for sending email
 const sendLoginNotification = async (email) => {
-const mailOptions = {
-  from: process.env.EMAIL, // Your sender email address
-  to: email, // User's email address
-  subject: "Login Notification",
-  text: `Hello ${email}, you have successfully logged in to your account. If this wasn't you, please contact support immediately.`,
-  html: `<p>Hello <strong>${email}</strong>,</p>
-             <p>You have successfully logged in to your account. If this wasn't you, please <a href="mailto:support@urbantrov.com.ng>contact support</a> immediately.</p>`,
-};
+  const mailOptions = {
+    from: process.env.EMAIL,
+    to: email,
+    subject: "Login Notification",
+    text: "You have successfully logged in.",
+  };
 
   const transporter = nodemailer.createTransport({
     host: "server2.lytehosting.com",
