@@ -612,6 +612,11 @@ const sendLoginNotification = async (user, order) => {
               item.product.prices.actualPrice
             ).toLocaleString()}`,
           })),
+          data: [
+            {
+              total: `₦${Number(order.total).toLocaleString()}`,
+            },
+          ],
           columns: {
             customWidth: {
               item: "20%",
@@ -619,6 +624,7 @@ const sendLoginNotification = async (user, order) => {
             },
             customAlignment: {
               price: "right",
+              total: "right",
             },
           },
         },
