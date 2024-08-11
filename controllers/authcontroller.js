@@ -4,8 +4,6 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 const { jwt_secret, jwt_expires } = require("../config");
 const crypto = require("crypto");
-const Mailgen = require("mailgen");
-const nodemailer = require("nodemailer");
 
 exports.signup = (req, res, next) => {
   const errors = validationResult(req);
@@ -36,74 +34,26 @@ exports.signup = (req, res, next) => {
       const refreshToken = jwt.sign({ _id: createdUser._id }, jwt_secret, {
         expiresIn: "30m",
       });
-
-      let config = {
-        host: "mail.urbantrov.com.ng",
-        port: 465,
+      res.cookie("jwt", refreshToken, {
+        httpOnly: true,
         secure: true,
-        auth: {
-          user: process.env.EMAIL,
-          pass: process.env.PASSWORD,
-        },
-      };
-      let transporter = nodemailer.createTransport(config);
-
-      let MailGenerator = new Mailgen({
-        theme: "default",
-        product: {
-          name: "Urban trove",
-          link: "https://mailgen.js/",
-          copyright: "Copyright © 2024 Urban trove. All rights reserved.",
-        },
+        sameSite: "none",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
       });
-      let response = {
-        body: {
-          name: email,
-          intro:
-            "We are thrilled to have you join us. Verify your email address to get started and access the resources available on our platform.",
-          action: {
-            instructions: "Click the button below to verify your account:",
-            button: {
-              color: "#22BC66", // Optional action button color
-              text: "Verify your account",
-              link: ` https://e-rent-green.vercel.app/verify/${createdUser._id}`,
-            },
-          },
-          signature: "Sincerely",
+      //Email function call should be here
+      res.status(200).json({
+        success: true,
+        code: 200,
+        status: "success",
+        data: {
+          ...createdUser["_doc"],
+          accessToken: token,
+          msg: "Registration was successful",
         },
-      };
-      let mail = MailGenerator.generate(response);
-      let message = {
-        from: process.env.EMAIL,
-        to: email,
-        subject: "Verify email",
-        html: mail,
-      };
-
-      // Send the email
-      return transporter.sendMail(message).then(() => {
-        // Set cookie and send the final response here
-        res.cookie("jwt", refreshToken, {
-          httpOnly: true,
-          secure: true,
-          sameSite: "none",
-          maxAge: 7 * 24 * 60 * 60 * 1000,
-        });
-
-        res.status(200).json({
-          success: true,
-          code: 200,
-          status: "success",
-          data: {
-            ...createdUser["_doc"],
-            accessToken: token,
-            msg: "Registration was successful",
-          },
-        });
       });
     })
     .catch((error) => {
-      next(error); // Forward the error to the error handler middleware
+      next(error);
     });
 };
 
@@ -191,35 +141,6 @@ exports.signin = async (req, res, next) => {
     });
   } catch (error) {
     next(error);
-  }
-};
-
-// Separate function for sending email
-const sendLoginNotification = async (email) => {
-  const mailOptions = {
-    from: process.env.EMAIL,
-    to: email,
-    subject: "Login Notification",
-    text: "You have successfully logged in.",
-  };
-
-  const transporter = nodemailer.createTransport({
-    host: "server2.lytehosting.com",
-    port: 465,
-    secure: true, // Use true since the port is 465
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
-    },
-    tls: {
-      rejectUnauthorized: false,
-    },
-  });
-
-  try {
-    await transporter.sendMail(mailOptions);
-  } catch (err) {
-    console.error("Error sending email:", err);
   }
 };
 

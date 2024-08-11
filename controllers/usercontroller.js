@@ -3,8 +3,6 @@ const bcrypt = require("bcryptjs");
 const { validationResult } = require("express-validator");
 const Order = require("../models/order");
 const Product = require("../models/product");
-const Mailgen = require("mailgen");
-const nodemailer = require("nodemailer");
 exports.checkOut = async (req, res, next) => {
   try {
     if (req.session["cart"] && req.session["cart"].length > 0) {
@@ -43,8 +41,6 @@ exports.checkOut = async (req, res, next) => {
         updatedAt: new Date(Date.now()),
       });
 
-      await sendLoginNotification(req.user, order.orderNo); // Call to a separate email service function
-
       req.session["cart"] = undefined;
 
       res.status(200).json({
@@ -70,59 +66,7 @@ exports.checkOut = async (req, res, next) => {
     next(error);
   }
 };
-const sendLoginNotification = async (user, orderNo) => {
-  let MailGenerator = new Mailgen({
-    theme: "salted",
-    product: {
-      name: "Urban trove",
-      link: "https://mailgen.js/",
-      copyright: "Copyright © 2024 Urban trove. All rights reserved.",
-      logo: "https://firebasestorage.googleapis.com/v0/b/newfoodapp-6f76d.appspot.com/o/logo.png?alt=media&token=91fc5015-ef7d-45a5-92cf-2950c3f61fdf",
-      logoHeight: "30px",
-    },
-  });
-  let response = {
-    body: {
-      name: user.fullname,
-      intro: [
-        "Thank you for shopping on Jumia!",
-        `Your order ${orderNo}  has been confirmed successfully.`,
-        "It will be packed and shipped as soon as possible.You will receive a notification from us once the item(s) are ready for delivery.",
-      ],
 
-      outro:
-        "Need help, or have questions? Just reply to this email, we'd love to help.",
-
-      signature: "Sincerely",
-    },
-  };
-  let mail = MailGenerator.generate(response);
-  let message = {
-    from: process.env.EMAIL,
-    to: user.email,
-    subject: `Your Urban Trove Order ${orderNo} has been Confirmed.`,
-    html: mail,
-  };
-
-  const transporter = nodemailer.createTransport({
-    host: "server2.lytehosting.com",
-    port: 465,
-    secure: true, // Use true since the port is 465
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
-    },
-    tls: {
-      rejectUnauthorized: false,
-    },
-  });
-
-  try {
-    await transporter.sendMail(message);
-  } catch (err) {
-    console.error("Error sending email:", err);
-  }
-};
 exports.getUserDetails = (req, res, next) => {
   const user = req.user;
   res.status(200).json({

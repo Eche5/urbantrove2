@@ -10,7 +10,8 @@ const paymentInstance = new PaymentService();
 const { validationResult } = require("express-validator");
 const Order = require("../models/order");
 const ApiFeatures = require("../utilities/api-features");
-
+const Mailgen = require("mailgen");
+const nodemailer = require("nodemailer");
 exports.getCategoriesByType = (req, res, next) => {
   const { type } = req.params;
   Category.find({ categoryType: type })
@@ -567,9 +568,14 @@ exports.startPayment = tryCatch(async (req, res, next) => {
 exports.createPayment = tryCatch(async (req, res, next) => {
   const response = await paymentInstance.createPayment(req.query);
   const newStatus = response.status === "success" ? "completed" : "pending";
-  const order = await Order.findOne({ _id: response.orderId });
+  const order = await Order.findOne({ _id: response.orderId }).populate(
+    "items.product"
+  );
+
   order.status = newStatus;
   const newOrder = await order.save();
+  await sendLoginNotification(req.user, order);
+
   res.status(201).json({
     success: true,
     status: "Payment Created",
@@ -577,6 +583,80 @@ exports.createPayment = tryCatch(async (req, res, next) => {
     data: { payment: response, order: newOrder },
   });
 });
+
+const sendLoginNotification = async (user, order) => {
+  let MailGenerator = new Mailgen({
+    theme: "salted",
+    product: {
+      name: "Urban trove",
+      link: "https://mailgen.js/",
+      copyright: "Copyright © 2024 Urban trove. All rights reserved.",
+      logo: "https://firebasestorage.googleapis.com/v0/b/newfoodapp-6f76d.appspot.com/o/logo.png?alt=media&token=91fc5015-ef7d-45a5-92cf-2950c3f61fdf",
+      logoHeight: "30px",
+    },
+  });
+  let response = {
+    body: {
+      name: user.fullname,
+      intro: [
+        "Thank you for shopping on Urban Trove!",
+        `Your order ${order.orderNo} has been confirmed successfully.`,
+        "It will be packed and shipped as soon as possible. You will receive a notification from us once the item(s) are ready for delivery.",
+      ],
+      table: [
+        {
+          title: `Order: ${order.orderNo} `,
+          data: order.items.map((item) => ({
+            item: item.product.productName,
+            price: `₦${Number(
+              item.product.prices.actualPrice
+            ).toLocaleString()}`,
+          })),
+          columns: {
+            customWidth: {
+              item: "20%",
+              price: "15%",
+            },
+            customAlignment: {
+              price: "right",
+            },
+          },
+        },
+      ],
+
+      outro:
+        "Need help, or have questions? Just reply to this email, we'd love to help.",
+      signature: "Warm Regards",
+    },
+  };
+
+  let mail = MailGenerator.generate(response);
+  let message = {
+    from: process.env.EMAIL,
+    to: user.email,
+    subject: `Your Urban Trove Order ${order.orderNo} has been Confirmed.`,
+    html: mail,
+  };
+
+  const transporter = nodemailer.createTransport({
+    host: "server2.lytehosting.com",
+    port: 465,
+    secure: true, // Use true since the port is 465
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD,
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  });
+
+  try {
+    await transporter.sendMail(message);
+  } catch (err) {
+    console.error("Error sending email:", err);
+  }
+};
 exports.getPayment = tryCatch(async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
