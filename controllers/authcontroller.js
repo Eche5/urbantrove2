@@ -51,7 +51,7 @@ exports.resendVerificationemail = async (req, res) => {
 
 const sendVerification = async (user) => {
   let MailGenerator = new Mailgen({
-    theme: "salted",
+    theme: "default",
     product: {
       name: "Urban trove",
       link: "https://mailgen.js/",
@@ -314,7 +314,7 @@ exports.forgotPassword = async (req, res, next) => {
     let transporter = nodemailer.createTransport(config);
 
     let MailGenerator = new Mailgen({
-      theme: "salted",
+      theme: "default",
       product: {
         name: "Urban Trove",
         link: "https://mailgen.js/",
