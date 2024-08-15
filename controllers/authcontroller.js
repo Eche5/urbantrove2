@@ -60,6 +60,10 @@ const sendVerification = async (user) => {
       logoHeight: "30px",
     },
   });
+  const link =
+    user.role === "user"
+      ? `https://www.urbantrov.com.ng/verify/${user._id}`
+      : `https://www.merchant.urbantrov.com.ng/verify/${user._id}`;
   let response = {
     body: {
       name: user.email,
@@ -68,12 +72,9 @@ const sendVerification = async (user) => {
       action: {
         instructions: "Click the button below to verify your account:",
         button: {
-          color: "#22BC66", // Optional action button color
+          color: "#22BC66",
           text: "Verify your account",
-          link:
-            user.role === "user"
-              ? `https://www.urbantrov.com.ng/verify/${user._id}`
-              : `https://www.merchant.urbantrov.com.ng/verify/${user._id}`,
+          link,
         },
       },
       signature: "Sincerely",
@@ -212,7 +213,7 @@ exports.signin = async (req, res, next) => {
         code: 401,
         status: "error",
         data: {
-          path: "password",
+          path: "isverified",
           msg: "please verify your email",
           value: user.isVerified,
           location: "body",

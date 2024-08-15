@@ -18,10 +18,6 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  status: {
-    type: String,
-    required: true,
-  },
   resetToken: String,
   resetTokenExpires: Date,
   location: {
