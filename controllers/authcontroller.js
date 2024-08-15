@@ -330,7 +330,10 @@ exports.forgotPassword = async (req, res, next) => {
           button: {
             color: "#22BC66", // Optional action button color
             text: "Reset your password",
-            link: `https://www.urbantrov.com.ng/resetpassword/${resetToken}`,
+            link:
+              user.role === "user"
+                ? `https://www.urbantrov.com.ng/resetpassword/${resetToken}`
+                : `https://www.merchant.urbantrov.com.ng/resetpassword/${resetToken}`,
           },
         },
         signature: "Sincerely",
