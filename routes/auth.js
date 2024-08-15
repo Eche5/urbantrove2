@@ -15,6 +15,8 @@ router.route("/signup").post([user, password], controller.signup);
 router.route("/signin").post([email, password], controller.signin);
 router.route("/refresh").get(controller.refresh);
 router.route("/logout").post(controller.LogOut);
+router.route("/verify/:id").patch(controller.verify);
+router.route("/verify").post(controller.resendVerificationemail);
 
 router
   .route("/forgot_password")

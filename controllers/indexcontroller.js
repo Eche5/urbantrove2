@@ -344,10 +344,6 @@ exports.deleteProduct = (req, res, next) => {
           },
         });
       }
-      const prodImages = product.images;
-      for (let image of prodImages) {
-        fs.unlinkSync(image.url.replace(server, "./public"));
-      }
       return res.status(200).json({
         success: true,
         code: 200,

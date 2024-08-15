@@ -35,6 +35,10 @@ const userSchema = new Schema({
   registeredAs: String,
   merchantCategory: String,
   category: String,
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
   isActive: {
     type: Boolean,
     default: true,
