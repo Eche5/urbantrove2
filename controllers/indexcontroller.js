@@ -125,51 +125,53 @@ exports.fetchSingleService = (req, res, next) => {
     });
 };
 exports.createNewProduct = async (req, res, next) => {
-  const body = req.body;
-  const { category_name, sub_category } = body;
-  const categoryId = await Category.findOne({
-    category_name,
-    sub_category,
-  });
-
-  Product.create({
-    productName: body.productName,
-    categoryId,
-    productType: body.productType,
-    header: body.header,
-    link: {
-      text: body.linkText,
-      url: body.linkUrl,
-    },
-    description: body.description,
-    images: body.images,
-    additionalDetails: {
-      gender: body.gender,
-      seller: body.seller,
-      quantity: body.quantity,
-      address: body.address,
-      services: body.services,
-    },
-    prices: {
-      actualPrice: body.prices.actualPrice,
-      discount: body.prices.discount,
-      shippingFee: body.prices.shippingFee,
-    },
-    userId: req.user._id,
-    createdAt: new Date(Date.now()),
-    updatedAt: new Date(Date.now()),
-  })
-    .then((product) => {
-      return res.status(200).json({
-        success: true,
-        code: 200,
-        status: "success",
-        data: { product, msg: "Single product inserted successfully" },
-      });
-    })
-    .catch((error) => {
-      next(error);
+  try {
+    const body = req.body;
+    const { category_name, sub_category } = body;
+    const categoryId = await Category.findOne({
+      category_name,
+      sub_category,
     });
+    const product = await Product.create({
+      productName: body.productName,
+      categoryId,
+      productType: body.productType,
+      header: body.header,
+      link: {
+        text: body.linkText,
+        url: body.linkUrl,
+      },
+      description: body.description,
+      images: body.images,
+      additionalDetails: {
+        gender: body.gender,
+        seller: body.seller,
+        quantity: body.quantity,
+        address: body.address,
+        services: body.services,
+      },
+      prices: {
+        actualPrice: body.prices.actualPrice,
+        discount: body.prices.discount,
+        shippingFee: body.prices.shippingFee,
+      },
+      userId: req.user._id,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      deliveryPreference: {
+        handleDelivery: body.delivery.handledByVendor,
+        deliveryService: body.delivery.deliveryService,
+      },
+    });
+    return res.status(200).json({
+      success: true,
+      code: 200,
+      status: "success",
+      data: { product, msg: "Single product inserted successfully" },
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 exports.getMerchantProducts = async (req, res, next) => {

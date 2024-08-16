@@ -47,9 +47,18 @@ const productSchema = new Schema({
     phone: String,
   },
   prices: {
-    actualPrice: String,
-    discount: String,
-    shippingFee: String,
+    actualPrice: {
+      type: String,
+      required: true,
+    },
+    discount: {
+      type: String,
+      required: true,
+    },
+    shippingFee: {
+      type: String,
+      required: true,
+    },
   },
   reviews: [
     {
@@ -69,6 +78,17 @@ const productSchema = new Schema({
   updatedAt: {
     type: Date,
     required: true,
+  },
+  deliveryPreference: {
+    handleDelivery: {
+      type: Boolean,
+      required: true,
+    },
+    deliveryService: {
+      type: String,
+      enum: ["swift_logistics"],
+      required: true,
+    },
   },
 });
 productSchema.methods.removeImage = function (id) {
