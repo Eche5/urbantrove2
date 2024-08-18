@@ -57,7 +57,6 @@ const productSchema = new Schema({
     },
     shippingFee: {
       type: String,
-      required: true,
     },
   },
   reviews: [
@@ -82,12 +81,10 @@ const productSchema = new Schema({
   deliveryPreference: {
     handleDelivery: {
       type: Boolean,
-      required: true,
     },
     deliveryService: {
       type: String,
       enum: ["swift_logistics"],
-      required: true,
     },
   },
 });

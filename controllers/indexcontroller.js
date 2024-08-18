@@ -3,7 +3,6 @@ const Product = require("../models/product");
 const mongoose = require("mongoose");
 
 const { server } = require("../config");
-const fs = require("fs");
 const tryCatch = require("../utilities/catchasync");
 const PaymentService = require("../services/payment");
 const paymentInstance = new PaymentService();
