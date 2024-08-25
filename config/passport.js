@@ -7,7 +7,6 @@ const FacebookStrategy = require("passport-facebook").Strategy;
 const User = require("../models/user");
 const {
   jwt_secret,
-  server,
   allowedOrigin,
   google_client_id,
   google_client_secret,
