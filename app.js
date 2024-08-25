@@ -43,20 +43,13 @@ app.use(helmet());
 app.use(logger("dev"));
 app.use(cookieParser());
 
-app.use(cors({ origin: true, credentials: true }));
-
+app.use(cors({ origin: allowedOrigin, optionsSuccessStatus: 200 }));
 app.use(
   session({
     resave: false,
     saveUninitialized: false,
     secret: session_secret,
     store: store,
-    cookie: {
-      sameSite: "none",
-      httpOnly: true,
-      secure: true,
-      maxAge: 1000 * 60 * 60 * 24 * 30,
-    },
   })
 );
 

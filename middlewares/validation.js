@@ -11,14 +11,15 @@ exports.password = body("password")
   .notEmpty()
   .withMessage("The password field requires a value")
   .isLength({ min: 8 })
-  .withMessage("password must be at least 8 characters")
+  .withMessage("Password must be at least 8 characters")
   .matches(
-    /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+    /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&_])[A-Za-z\d@$!%*?&_]{8,}$/
   )
   .withMessage(
-    "Password must contain atleast one lowercase, one uppercase, one digit and one special character"
+    "Password must contain at least one lowercase, one uppercase, one digit, and one special character"
   )
   .trim();
+
 exports.user = check("email")
   .notEmpty()
   .withMessage("The email field cannot be empty")
@@ -41,9 +42,9 @@ exports.catName = body("category_name")
 exports.catType = body("category_type")
   .notEmpty()
   .withMessage("Category type field is required");
-  exports.subCatType = body("category_type")
-    .notEmpty()
-    .withMessage("subCtegory type field is required");
+exports.subCatType = body("category_type")
+  .notEmpty()
+  .withMessage("subCtegory type field is required");
 
 exports.oldPassword = body("oldPassword")
   .notEmpty()

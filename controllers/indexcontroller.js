@@ -413,6 +413,7 @@ exports.updateProduct = (req, res, next) => {
 };
 exports.searchProduct = (req, res, next) => {
   const { q } = req.query;
+  console.log(q)
   Product.find({ productName: { $regex: new RegExp(q), $options: "i" } })
     .then((products) => {
       return res.status(200).json({
